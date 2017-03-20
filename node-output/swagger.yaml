@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  description: "e-Builder API"
+  description: "e-Builder API Demo"
   version: "0.0.1"
   title: "e-Builder API"
 host: "localhost:10010"
