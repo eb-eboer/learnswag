@@ -1,0 +1,1691 @@
+---
+swagger: "2.0"
+info:
+  description: "e-Builder API"
+  version: "0.0.1"
+  title: "e-Builder API"
+host: "localhost:10010"
+basePath: "/"
+schemes:
+- "http"
+- "https"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  /hello_world:
+    get:
+      description: "Returns greeting"
+      operationId: "get"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties: {}
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "hello_world"
+  /load_test/{userId}/{bidPackageId}:
+    get:
+      description: "Runs test"
+      operationId: "getLoadTest"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "userId"
+        in: "path"
+        description: "userId"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "bidPackageId"
+        in: "path"
+        description: "Bid Package Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties: {}
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "load_test"
+  /login:
+    get:
+      description: "Returns Token"
+      operationId: "getLogin"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties: {}
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "login"
+  /login/bidding/{inviteId}:
+    get:
+      description: "Returns temporary token for Invite Id"
+      operationId: "getTokenForInvite"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "inviteId"
+        in: "path"
+        description: "Bid inviteId"
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties: {}
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "login"
+  /api/feedback/:
+    post:
+      description: "submit user feedback"
+      operationId: "submitUserFeedback"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "userFeedbackBody"
+        required: true
+        schema:
+          $ref: "#/definitions/userFeedbackPost"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties: {}
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            type: "object"
+            properties: {}
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "user_feedback"
+  /api/bidding/summaries:
+    get:
+      description: "Gets `BidPackageSummary` objects for user. Takes user ID argument"
+      operationId: "getSummary"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "page"
+        in: "query"
+        description: "Result Page"
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "page_limit"
+        in: "query"
+        description: "Items per Result Page"
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "sort_column"
+        in: "query"
+        description: "Result Page"
+        required: false
+        type: "string"
+      - name: "sort_descending"
+        in: "query"
+        description: "Sort direction"
+        required: false
+        type: "boolean"
+      - name: "filter"
+        in: "query"
+        description: "Filter Query 'property:value'"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/bidPackageSummaries"
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_package_summaries"
+  /api/bidding/users/{inviteId}:
+    get:
+      description: "Update Invitation objects with e-Builder userID for user."
+      operationId: "invitationUpdateUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "inviteId"
+        in: "path"
+        description: "Bid inviteId"
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_register_user"
+  /api/bidding/users/register/{inviteId}:
+    post:
+      description: "Update Invitation objects with e-Builder userID for user."
+      operationId: "registerUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "inviteId"
+        in: "path"
+        description: "Bid inviteId"
+        required: true
+        type: "string"
+        format: "uuid"
+      - in: "body"
+        name: "registerUserBody"
+        required: true
+        schema:
+          $ref: "#/definitions/UserRegistrationPost"
+      responses:
+        200:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/UserIdResponse"
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_register_user"
+  /api/bidding/bid_package/info/{bidPackageId}:
+    get:
+      description: "Get Invitation Bid Package Information."
+      operationId: "getBidPackageInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "bidPackageId"
+        in: "path"
+        description: "Bid Package Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/bidPackageInformation"
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_information"
+  /api/bidding/bid_package/submission/{bidPackageId}:
+    get:
+      description: "Get Invitation Bid Package Information."
+      operationId: "getBidSubmission"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "bidPackageId"
+        in: "path"
+        description: "Bid Package Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/bidPackageSubmission"
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_submission"
+  /api/bidding/bid_package/addenda/{bidPackageId}:
+    get:
+      description: "Get Invitation Bid Package Addenda."
+      operationId: "getAddenda"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "bidPackageId"
+        in: "path"
+        description: "Bid Package Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/bidPackageAddenda"
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_package_addenda"
+  /api/bidding/bid_package/documents/{bidPackageId}:
+    get:
+      description: "Get Invitation Bid Package Documents."
+      operationId: "getBidPackageDocuments"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "bidPackageId"
+        in: "path"
+        description: "Bid Package Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/bidPackageDocuments"
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_package_documents"
+  /api/bidding/bid_package/questions/{bidPackageId}/{inviteId}:
+    get:
+      description: "Get Invitation Bid Questions."
+      operationId: "getQuestionsForInvite"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "bidPackageId"
+        in: "path"
+        description: "Bid Package Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "inviteId"
+        in: "path"
+        description: "Bid inviteId"
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/bidQuestions"
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_questions"
+  /api/bidding/bid_package/documents/download/{bidPackageId}/{fileId}:
+    get:
+      description: "downloads files"
+      operationId: "bidPackageDocumentsDownload"
+      produces:
+      - "application/json"
+      - "application/octet-stream"
+      - "multipart/mixed"
+      parameters:
+      - name: "bidPackageId"
+        in: "path"
+        description: "Bid Package Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "fileId"
+        in: "path"
+        description: "e-Builder file Id {object Id}"
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "file"
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_package_documents"
+  /api/bidding/bid/submission_custom_fields/{bidPackageId}/{inviteId}:
+    get:
+      description: "Get Invitation Bid Questions."
+      operationId: "getSubmissionCustomFields"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "bidPackageId"
+        in: "path"
+        description: "Bid Package Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "inviteId"
+        in: "path"
+        description: "Bid inviteId"
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/bidSubmissionCustomFields"
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_submission_custom_fields"
+  /api/bidding/bid/section_item/{bidId}/{sectionItemId}:
+    put:
+      description: "Adds or update section item values for a bid"
+      operationId: "updateSectionItem"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "bidId"
+        in: "path"
+        description: "User Bid Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "sectionItemId"
+        in: "path"
+        description: "e-Builder bid section values Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      - in: "body"
+        name: "sectionItemValues"
+        required: true
+        schema:
+          $ref: "#/definitions/sectionItemValues"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties: {}
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_section_item"
+  /api/bidding/bid/additional_info/answer/{bidId}/{bidAddInfoId}:
+    put:
+      description: "Updates bid additional information answer"
+      operationId: "additionalInfoAnswer"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "bidId"
+        in: "path"
+        description: "User Bid Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "bidAddInfoId"
+        in: "path"
+        description: "e-Builder bid additional info values Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      - in: "body"
+        name: "bidAddInfoValue"
+        required: true
+        schema:
+          $ref: "#/definitions/bidAddInfoValue"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties: {}
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_additional_info"
+  /api/bidding/bid/addenda/acknowledge/{bidId}/{addendaId}:
+    put:
+      description: "Returns greeting"
+      operationId: "acknowledgeAddenda"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "bidId"
+        in: "path"
+        description: "User Bid Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "addendaId"
+        in: "path"
+        description: "e-Builder bid addenda Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      - in: "body"
+        name: "bidAddendaAck"
+        required: true
+        schema:
+          $ref: "#/definitions/bidAddendaAckValue"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties: {}
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_package_addenda"
+  /api/bidding/bid/qualifications/update/{bidId}:
+    put:
+      description: "Update bid qualification"
+      operationId: "updateBidQualification"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "bidId"
+        in: "path"
+        description: "User Bid Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      - in: "body"
+        name: "qualification"
+        required: true
+        schema:
+          $ref: "#/definitions/bidQualification"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties: {}
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_qualifications"
+  /api/bidding/bid/{inviteId}:
+    post:
+      description: "creates or updates bid"
+      operationId: "addUpdateBid"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "inviteId"
+        in: "path"
+        description: "Bid inviteId"
+        required: true
+        type: "string"
+        format: "uuid"
+      - in: "body"
+        name: "bidSubmitBody"
+        required: true
+        schema:
+          $ref: "#/definitions/bidSubmission"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties: {}
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        500:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+    x-swagger-router-controller: "bid_submission"
+  /api/bidding/bid/documents/attach/{bidId}/{documentId}:
+    put:
+      description: "submits bid"
+      operationId: "bidDocumentsAttach"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "bidId"
+        in: "path"
+        description: "User Bid Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "documentId"
+        in: "path"
+        description: "e-Builder document Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties: {}
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_documents"
+  /api/bidding/bid/documents/detach/{bidId}/{documentId}:
+    put:
+      description: "submits bid"
+      operationId: "bidDocumentsDetach"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "bidId"
+        in: "path"
+        description: "User Bid Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "documentId"
+        in: "path"
+        description: "e-Builder document Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties: {}
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_documents"
+  /api/bidding/bid_package/status_info/{bidPackageId}/{inviteId}:
+    get:
+      description: "Returns greeting"
+      operationId: "getBiddingStatus"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "bidPackageId"
+        in: "path"
+        description: "Bid Package Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "inviteId"
+        in: "path"
+        description: "Bid inviteId"
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties: {}
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_status"
+  /api/bidding/bid_package/status/{bidPackageId}/{inviteId}:
+    put:
+      description: "Updates bid invite status"
+      operationId: "updateBiddingStatus"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "bidPackageId"
+        in: "path"
+        description: "Bid Package Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "inviteId"
+        in: "path"
+        description: "Bid inviteId"
+        required: true
+        type: "string"
+        format: "uuid"
+      - in: "body"
+        name: "bidAcceptBody"
+        required: true
+        schema:
+          $ref: "#/definitions/bidStatusPut"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties: {}
+        204:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        401:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_status"
+  /api/bidding/bid_package/questions/submit/{bidPackageId}/{inviteId}:
+    put:
+      description: "Returns greeting"
+      operationId: "submitBidPackageQuestion"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "bidPackageId"
+        in: "path"
+        description: "Bid Package Id"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "inviteId"
+        in: "path"
+        description: "Bid inviteId"
+        required: true
+        type: "string"
+        format: "uuid"
+      - in: "body"
+        name: "bidQuestion"
+        required: true
+        schema:
+          $ref: "#/definitions/bidQuestion"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties: {}
+        400:
+          description: "Not found response"
+          schema:
+            $ref: "#/definitions/BasicResponse"
+        404:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    x-swagger-router-controller: "bid_questions"
+definitions:
+  ErrorResponse:
+    required:
+    - "message"
+    properties:
+      message:
+        type: "string"
+  BasicResponse:
+    required:
+    - "message"
+    properties:
+      message:
+        type: "string"
+  UserIdResponse:
+    required:
+    - "user_id"
+    properties:
+      user_id:
+        type: "string"
+  apiState:
+    type: "object"
+    required:
+    - "limit"
+    - "page"
+    properties:
+      page:
+        type: "integer"
+        format: "int32"
+      limit:
+        type: "integer"
+        format: "int32"
+  file:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      file_type:
+        type: "string"
+      size_kb:
+        type: "integer"
+        format: "int32"
+  bidPackageSummaries:
+    allOf:
+    - $ref: "#/definitions/apiState"
+    - properties:
+        projects:
+          type: "array"
+          items:
+            $ref: "#/definitions/bidPackageProjects"
+  bidPackageProjects:
+    type: "object"
+    required:
+    - "account_id"
+    - "account_name"
+    - "id"
+    - "name"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      account_id:
+        type: "string"
+      account_name:
+        type: "string"
+      bidpackages:
+        type: "array"
+        items:
+          $ref: "#/definitions/bidPackageSummary"
+  bidPackageSummary:
+    type: "object"
+    required:
+    - "id"
+    - "invitation_id"
+    - "invitation_key"
+    - "name"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      invitation_id:
+        type: "string"
+      invitation_key:
+        type: "string"
+      due_date:
+        type: "string"
+      status:
+        type: "string"
+      bid_submitted:
+        type: "string"
+      bidding_status:
+        type: "string"
+  bidPackageInformation:
+    type: "object"
+    required:
+    - "bid_package"
+    - "project"
+    properties:
+      project:
+        type: "string"
+      bid_package:
+        type: "string"
+      pre_bid_meeting_datetime:
+        type: "string"
+        format: "date-time"
+      pre_bid_meeting_location:
+        type: "string"
+      bid_package_status:
+        type: "string"
+      bid_contact:
+        type: "string"
+      bid_start_datetime:
+        type: "string"
+        format: "date-time"
+      bid_submitted:
+        type: "string"
+      bid_due_datetime:
+        type: "string"
+        format: "date-time"
+      bidding_Status:
+        type: "string"
+  bidItemCustomField:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      value:
+        type: "string"
+  sectionAttributes:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      value:
+        type: "boolean"
+  bidPackageBidItem:
+    type: "object"
+    properties:
+      number:
+        type: "string"
+      description:
+        type: "string"
+      spec_reference:
+        type: "string"
+      part_number:
+        type: "string"
+      quantity:
+        type: "number"
+        format: "double"
+      unit_of_measure:
+        type: "string"
+      unit_cost:
+        type: "number"
+        format: "double"
+      total_cost:
+        type: "number"
+        format: "double"
+      custom_fields:
+        type: "array"
+        items:
+          $ref: "#/definitions/bidItemCustomField"
+  bidPackageSection:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      display_order:
+        type: "integer"
+      section_type:
+        type: "string"
+      bid_items:
+        type: "array"
+        items:
+          $ref: "#/definitions/bidPackageBidItem"
+      attributes:
+        type: "array"
+        items:
+          $ref: "#/definitions/sectionAttributes"
+  bidPackageInfo:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      question:
+        type: "string"
+      answer:
+        type: "string"
+      required:
+        type: "boolean"
+      is_bidder_entry:
+        type: "boolean"
+      display_order:
+        type: "integer"
+  bidPackageAddendas:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      number:
+        type: "string"
+      description:
+        type: "string"
+      date_created:
+        type: "string"
+        format: "date-time"
+      date_documentation_available:
+        type: "string"
+        format: "date-time"
+      details:
+        type: "string"
+  bidPackagDocuments:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      date_attached:
+        type: "string"
+        format: "date-time"
+  bidPackageSubmission:
+    type: "object"
+    properties:
+      bid_qualifications:
+        type: "string"
+      sections:
+        type: "array"
+        items:
+          $ref: "#/definitions/bidPackageSection"
+      additional_infos:
+        type: "array"
+        items:
+          $ref: "#/definitions/bidPackageInfo"
+      addendas:
+        type: "array"
+        items:
+          $ref: "#/definitions/bidPackageAddendas"
+      supporting_documentation:
+        type: "array"
+        items:
+          $ref: "#/definitions/bidPackagDocuments"
+  bidPackagAddendum:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      number:
+        type: "string"
+      description:
+        type: "string"
+      date_created:
+        type: "string"
+        format: "date-time"
+      date_documentation_available:
+        type: "string"
+        format: "date-time"
+      details:
+        type: "string"
+  bidPackageAddenda:
+    type: "object"
+    properties:
+      addenda:
+        type: "array"
+        items:
+          $ref: "#/definitions/bidPackagAddendum"
+  bidPackageDocuments:
+    allOf:
+    - $ref: "#/definitions/file"
+    - {}
+  bidQuestion:
+    type: "object"
+    properties:
+      sender:
+        type: "string"
+      company_name:
+        type: "string"
+      subject:
+        type: "string"
+      question:
+        type: "string"
+      question_number:
+        type: "integer"
+      date_question_sent:
+        type: "string"
+        format: "date-time"
+  bidResponse:
+    type: "object"
+    properties:
+      response:
+        type: "string"
+      response_id:
+        type: "string"
+      date_response_sent:
+        type: "string"
+        format: "date-time"
+      allof:
+        $ref: "#/definitions/bidQuestion"
+  bidQuestions:
+    type: "object"
+    properties:
+      questions:
+        type: "array"
+        items:
+          $ref: "#/definitions/bidQuestions_questions"
+  bidSubmissionCustomField:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      field_type:
+        type: "string"
+      description:
+        type: "string"
+      display_order:
+        type: "integer"
+      value:
+        type: "string"
+      value_id:
+        type: "string"
+  bidSubmissionCustomFields:
+    type: "object"
+    properties:
+      questions:
+        type: "array"
+        items:
+          $ref: "#/definitions/bidSubmissionCustomField"
+  bidQualification:
+    type: "object"
+    properties:
+      qualification:
+        type: "string"
+  sectionItemValues:
+    type: "object"
+  bidAddInfoValue:
+    type: "object"
+    properties:
+      answer:
+        type: "string"
+  bidAddendaAckValue:
+    type: "object"
+    properties:
+      acknowledge:
+        type: "boolean"
+  bid:
+    type: "object"
+    properties:
+      bid_id:
+        type: "string"
+      invitation_id:
+        type: "string"
+      status:
+        type: "string"
+        enum:
+        - "Draft"
+        - "Submitted"
+      qualification:
+        type: "string"
+  bidItemCustomFieldSubmittal:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      value:
+        type: "string"
+      order:
+        type: "integer"
+      id:
+        type: "integer"
+  bidItemSubmittal:
+    type: "object"
+    properties:
+      number:
+        type: "string"
+      description:
+        type: "string"
+      display_order:
+        type: "integer"
+      id:
+        type: "string"
+      total_cost:
+        type: "number"
+        format: "double"
+      custom_fields:
+        type: "array"
+        items:
+          $ref: "#/definitions/bidItemCustomFieldSubmittal"
+  bidSectionSubmittal:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      display_order:
+        type: "integer"
+      bid_item_values:
+        type: "array"
+        items:
+          $ref: "#/definitions/bidItemSubmittal"
+  bidSupportingDocumentsSubmittal:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      version:
+        type: "integer"
+      file_name:
+        type: "string"
+  bidAdditionalInfoSubmittal:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      answer:
+        type: "string"
+  bidAddendaSubmittal:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      acknowledged:
+        type: "boolean"
+  bidSubmission:
+    type: "object"
+    properties:
+      bid_id:
+        type: "string"
+      bid_status:
+        type: "string"
+        enum:
+        - "Draft"
+        - "Submitted"
+      bid_qualifications:
+        type: "string"
+      sections:
+        type: "array"
+        items:
+          $ref: "#/definitions/bidSectionSubmittal"
+      additional_infos:
+        type: "array"
+        items:
+          $ref: "#/definitions/bidAdditionalInfoSubmittal"
+      addendas:
+        type: "array"
+        items:
+          $ref: "#/definitions/bidAddendaSubmittal"
+      supporting_documentation:
+        type: "array"
+        items:
+          $ref: "#/definitions/bidSupportingDocumentsSubmittal"
+  bidStatusGet:
+    type: "object"
+    properties:
+      bidding_status:
+        type: "string"
+        enum:
+        - "pending"
+        - "WillBid"
+        - "WillNotBid"
+      message:
+        type: "string"
+  bidStatusPut:
+    type: "object"
+    required:
+    - "status"
+    properties:
+      status:
+        type: "string"
+        enum:
+        - "Pending"
+        - "WillBid"
+        - "WillNotBid"
+        - "Awarded"
+      construction_code_id:
+        type: "string"
+  uiField:
+    type: "object"
+    properties:
+      group:
+        type: "string"
+      input_type:
+        type: "string"
+        enum:
+        - "text"
+        - "dropdown"
+      required:
+        type: "boolean"
+      options:
+        type: "string"
+  UserRegistrationGet:
+    type: "object"
+    properties:
+      fields:
+        type: "array"
+        items:
+          $ref: "#/definitions/uiField"
+      business_types:
+        type: "object"
+        properties: {}
+      state_provinces:
+        type: "object"
+        properties: {}
+      countries:
+        type: "object"
+        properties: {}
+      sec_questions:
+        type: "object"
+        properties: {}
+  securityQuestion:
+    type: "object"
+    properties:
+      question:
+        type: "string"
+      answer:
+        type: "string"
+  UserRegistrationPost:
+    type: "object"
+    required:
+    - "business_address"
+    - "business_type"
+    - "city"
+    - "company_name"
+    - "email_address"
+    - "first_name"
+    - "last_name"
+    - "office_phone"
+    - "postal_zip"
+    - "questions"
+    - "time_zone"
+    - "user_name"
+    properties:
+      first_name:
+        type: "string"
+      last_name:
+        type: "string"
+      user_name:
+        type: "string"
+      company_name:
+        type: "string"
+      email_address:
+        type: "string"
+      business_type:
+        type: "string"
+      department:
+        type: "string"
+      po_box_suite:
+        type: "string"
+      state_province:
+        type: "string"
+      postal_zip:
+        type: "string"
+      office_fax:
+        type: "string"
+      business_pager:
+        type: "string"
+      job_title:
+        type: "string"
+      business_address:
+        type: "string"
+      city:
+        type: "string"
+      country:
+        type: "string"
+      office_phone:
+        type: "string"
+      business_cell:
+        type: "string"
+      time_zone:
+        type: "integer"
+      questions:
+        type: "array"
+        items:
+          $ref: "#/definitions/securityQuestion"
+  userFeedbackPost:
+    type: "object"
+    required:
+    - "feedback_text"
+    - "feedback_type"
+    - "is_public_page"
+    - "page"
+    properties:
+      feedback_type:
+        type: "string"
+        enum:
+        - "like"
+        - "dislike"
+      feedback_text:
+        type: "string"
+      page:
+        type: "string"
+      is_public_page:
+        type: "boolean"
+  bidQuestions_questions:
+    properties:
+      id:
+        type: "string"
+      allof:
+        $ref: "#/definitions/bidResponse"
+parameters:
+  documentIdPathParam:
+    name: "documentId"
+    in: "path"
+    description: "e-Builder document Id"
+    required: true
+    type: "string"
+    format: "uuid"
+  bidPackageSectionIdPathParam:
+    name: "sectionId"
+    in: "path"
+    description: "e-Builder bid section Id"
+    required: true
+    type: "string"
+    format: "uuid"
+  addendaIdPathParam:
+    name: "addendaId"
+    in: "path"
+    description: "e-Builder bid addenda Id"
+    required: true
+    type: "string"
+    format: "uuid"
+  inviteIdPathParam:
+    name: "inviteId"
+    in: "path"
+    description: "Bid inviteId"
+    required: true
+    type: "string"
+    format: "uuid"
+  userIdPathParam:
+    name: "userId"
+    in: "path"
+    description: "userId"
+    required: true
+    type: "string"
+    format: "uuid"
+  bidPackageIdPathParam:
+    name: "bidPackageId"
+    in: "path"
+    description: "Bid Package Id"
+    required: true
+    type: "string"
+    format: "uuid"
+  bidIdPathParam:
+    name: "bidId"
+    in: "path"
+    description: "User Bid Id"
+    required: true
+    type: "string"
+    format: "uuid"
+  sectionItemIdPathParam:
+    name: "sectionItemId"
+    in: "path"
+    description: "e-Builder bid section values Id"
+    required: true
+    type: "string"
+    format: "uuid"
+  bidAddInfoIdPathParam:
+    name: "bidAddInfoId"
+    in: "path"
+    description: "e-Builder bid additional info values Id"
+    required: true
+    type: "string"
+    format: "uuid"
+  fileIdPathParam:
+    name: "fileId"
+    in: "path"
+    description: "e-Builder file Id {object Id}"
+    required: true
+    type: "string"
+    format: "uuid"
+  bidItemBodyParam:
+    in: "body"
+    name: "bidItem"
+    required: true
+    schema:
+      $ref: "#/definitions/bidPackageBidItem"
+  bidQuestionBodyParam:
+    in: "body"
+    name: "bidQuestion"
+    required: true
+    schema:
+      $ref: "#/definitions/bidQuestion"
+  bidQualificationBodyParam:
+    in: "body"
+    name: "qualification"
+    required: true
+    schema:
+      $ref: "#/definitions/bidQualification"
+  sectionItemValuesBodyParam:
+    in: "body"
+    name: "sectionItemValues"
+    required: true
+    schema:
+      $ref: "#/definitions/sectionItemValues"
+  bidAddInfoBodyParam:
+    in: "body"
+    name: "bidAddInfoValue"
+    required: true
+    schema:
+      $ref: "#/definitions/bidAddInfoValue"
+  bidAddendaAckBodyParam:
+    in: "body"
+    name: "bidAddendaAck"
+    required: true
+    schema:
+      $ref: "#/definitions/bidAddendaAckValue"
+  bidBodyParam:
+    in: "body"
+    name: "bidBody"
+    required: true
+    schema:
+      $ref: "#/definitions/bid"
+  bidSubmitBodyParam:
+    in: "body"
+    name: "bidSubmitBody"
+    required: true
+    schema:
+      $ref: "#/definitions/bidSubmission"
+  bidStatusBodyParam:
+    in: "body"
+    name: "bidAcceptBody"
+    required: true
+    schema:
+      $ref: "#/definitions/bidStatusPut"
+  registerUserBodyParam:
+    in: "body"
+    name: "registerUserBody"
+    required: true
+    schema:
+      $ref: "#/definitions/UserRegistrationPost"
+  userFeedbackBodyParam:
+    in: "body"
+    name: "userFeedbackBody"
+    required: true
+    schema:
+      $ref: "#/definitions/userFeedbackPost"
+  pageQueryParam:
+    name: "page"
+    in: "query"
+    description: "Result Page"
+    required: false
+    type: "integer"
+    format: "int32"
+  pageLimitQueryParam:
+    name: "page_limit"
+    in: "query"
+    description: "Items per Result Page"
+    required: false
+    type: "integer"
+    format: "int32"
+  sortColumnQueryParam:
+    name: "sort_column"
+    in: "query"
+    description: "Result Page"
+    required: false
+    type: "string"
+  sortDescendingQueryParam:
+    name: "sort_descending"
+    in: "query"
+    description: "Sort direction"
+    required: false
+    type: "boolean"
+  filterQueryParam:
+    name: "filter"
+    in: "query"
+    description: "Filter Query 'property:value'"
+    required: false
+    type: "string"
